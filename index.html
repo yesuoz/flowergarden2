@@ -27,18 +27,23 @@
             width: 100%;
             height: calc(100% - 60px);
         }
-        .flower {
+        .flower-container {
             position: absolute;
-            transition: transform 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .flower {
+            width: 50px;
+            height: 100px;
         }
         .grass {
-            position: absolute;
             width: 30px;
-            height: 15px;
+            height: 10px;
             background: green;
             border-radius: 50%;
-            bottom: -5px;
-            left: calc(50% - 15px);
+            position: absolute;
+            bottom: 0;
         }
         #waterButton {
             padding: 10px 20px;
@@ -96,14 +101,14 @@
 
         function createFlower(x, y) {
             const flowerContainer = document.createElement('div');
-            flowerContainer.style.position = 'absolute';
+            flowerContainer.classList.add('flower-container');
             flowerContainer.style.left = `${x}px`;
             flowerContainer.style.top = `${y}px`;
 
             const flower = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             flower.setAttribute('class', 'flower');
             flower.setAttribute('viewBox', '0 0 200 200');
-            flower.setAttribute('width', '100');
+            flower.setAttribute('width', '50');
             flower.setAttribute('height', '100');
             
             const petalColor = getRandomColor();
@@ -113,11 +118,11 @@
                 <ellipse class="leaf" cx="95" cy="170" rx="10" ry="4" fill="green" transform="rotate(-30 95 170)" style="opacity: 0;"/>
                 <ellipse class="leaf" cx="105" cy="170" rx="10" ry="4" fill="green" transform="rotate(30 105 170)" style="opacity: 0;"/>
                 <circle class="center" cx="100" cy="140" r="10" fill="yellow" style="opacity: 0;"/>
-                <circle class="petal" cx="100" cy="120" r="20" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="70" cy="140" r="20" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="130" cy="140" r="20" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="85" cy="180" r="20" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="115" cy="180" r="20" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="100" cy="120" r="15" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="70" cy="140" r="15" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="130" cy="140" r="15" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="85" cy="180" r="15" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="115" cy="180" r="15" fill="${petalColor}" style="opacity: 0;"/>
             `;
 
             const grass = document.createElement('div');
@@ -148,7 +153,7 @@
         }
 
         document.getElementById('waterButton').addEventListener('click', function() {
-            const x = Math.random() * (window.innerWidth - 100);
+            const x = Math.random() * (window.innerWidth - 50);
             const y = Math.random() * (window.innerHeight - 100);
             createFlower(x, y);
 
@@ -162,7 +167,7 @@
 
             const waterEffect = document.createElement('div');
             waterEffect.classList.add('waterEffect');
-            waterEffect.style.left = `${x + 50}px`;
+            waterEffect.style.left = `${x + 25}px`;
             waterEffect.style.top = `${y + 50}px`;
             garden.appendChild(waterEffect);
 
