@@ -114,15 +114,14 @@
             const petalColor = getRandomColor();
 
             flower.innerHTML = `
-                <line class="stem" x1="100" y1="200" x2="100" y2="150" stroke="green" stroke-width="2"/>
-                <ellipse class="leaf" cx="95" cy="170" rx="10" ry="4" fill="green" transform="rotate(-30 95 170)" style="opacity: 0;"/>
-                <ellipse class="leaf" cx="105" cy="170" rx="10" ry="4" fill="green" transform="rotate(30 105 170)" style="opacity: 0;"/>
-                <circle class="center" cx="100" cy="140" r="10" fill="yellow" style="opacity: 0;"/>
-                <circle class="petal" cx="100" cy="120" r="15" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="70" cy="140" r="15" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="130" cy="140" r="15" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="85" cy="180" r="15" fill="${petalColor}" style="opacity: 0;"/>
-                <circle class="petal" cx="115" cy="180" r="15" fill="${petalColor}" style="opacity: 0;"/>
+                <line class="stem" x1="100" y1="200" x2="100" y2="50" stroke="green" stroke-width="4"/>
+                <circle class="center" cx="100" cy="50" r="10" fill="yellow"/>
+                ${Array.from({ length: 12 }, (_, i) => {
+                    const angle = (i / 12) * Math.PI * 2;
+                    const cx = 100 + Math.cos(angle) * 20;
+                    const cy = 50 + Math.sin(angle) * 20;
+                    return `<circle class="petal" cx="${cx}" cy="${cy}" r="10" fill="${petalColor}" />`;
+                }).join('')}
             `;
 
             const grass = document.createElement('div');
@@ -136,16 +135,12 @@
 
         function growFlower(flower, stage) {
             const stem = flower.querySelector('.stem');
-            const leaves = flower.querySelectorAll('.leaf');
             const center = flower.querySelector('.center');
             const petals = flower.querySelectorAll('.petal');
 
             if (stage <= 4) {
-                stem.setAttribute('y2', 150 - stage * 5);
-                if (stage == 1) {
-                    leaves.forEach(leaf => leaf.style.opacity = 1);
-                }
-                if (stage == 2) {
+                stem.setAttribute('y2', 200 - stage * 30);
+                if (stage >= 1) {
                     center.style.opacity = 1;
                     petals.forEach(petal => petal.style.opacity = 1);
                 }
