@@ -25,11 +25,20 @@
             flex-grow: 1;
             position: relative;
             width: 100%;
-            height: 100%;
+            height: calc(100% - 60px);
         }
         .flower {
             position: absolute;
             transition: transform 0.5s ease-in-out;
+        }
+        .grass {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background: green;
+            border-radius: 50%;
+            bottom: 0;
+            left: calc(50% - 10px);
         }
         #waterButton {
             padding: 10px 20px;
@@ -43,6 +52,7 @@
             color: white;
             border: none;
             border-radius: 5px;
+            user-select: none;
         }
         .waterEffect {
             position: absolute;
@@ -84,14 +94,17 @@
         const garden = document.getElementById('garden');
 
         function createFlower(x, y) {
+            const flowerContainer = document.createElement('div');
+            flowerContainer.style.position = 'absolute';
+            flowerContainer.style.left = `${x}px`;
+            flowerContainer.style.top = `${y}px`;
+
             const flower = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             flower.setAttribute('class', 'flower');
             flower.setAttribute('viewBox', '0 0 200 200');
             flower.setAttribute('width', '100');
             flower.setAttribute('height', '100');
-            flower.style.left = `${x}px`;
-            flower.style.top = `${y}px`;
-
+            
             flower.innerHTML = `
                 <line class="stem" x1="100" y1="200" x2="100" y2="150" stroke="green" stroke-width="2"/>
                 <ellipse class="leaf" cx="95" cy="170" rx="10" ry="4" fill="green" transform="rotate(-30 95 170)" style="opacity: 0;"/>
@@ -103,7 +116,13 @@
                 <circle class="petal" cx="95" cy="145" r="5" fill="white" style="opacity: 0;"/>
                 <circle class="petal" cx="105" cy="145" r="5" fill="white" style="opacity: 0;"/>
             `;
-            garden.appendChild(flower);
+
+            const grass = document.createElement('div');
+            grass.setAttribute('class', 'grass');
+
+            flowerContainer.appendChild(flower);
+            flowerContainer.appendChild(grass);
+            garden.appendChild(flowerContainer);
             flowers.push(flower);
         }
 
@@ -149,6 +168,16 @@
             }, 1000);
 
             growthStage++;
+        });
+
+        // Sayfa kaydırılabilirliğini engellemek için
+        window.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+        }, { passive: false });
+
+        // Butona arka arkaya tıklamanın sayfa büyümesine neden olmasını engellemek için
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
         });
     </script>
 </body>
