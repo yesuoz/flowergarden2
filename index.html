@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hatunumun Bahçesi</title>
+    <title>Çiçek Sulama Uygulaması</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,7 +96,7 @@
     </style>
 </head>
 <body>
-    <h1>Hatunumun Bahçesi</h1>
+    <h1>Çiçek Sulama Uygulaması</h1>
     <div id="garden"></div>
     <button id="waterButton">Sulayıcı!</button>
     <script>
@@ -137,9 +137,12 @@
 
             const grass = document.createElement('div');
             grass.setAttribute('class', 'grass');
+            grass.style.left = `${x + 40}px`; // Çiçeğin altında görünecek şekilde konumlandırıyoruz
+            grass.style.top = `${y + 90}px`; // Çiçeğin altında görünecek şekilde konumlandırıyoruz
+
             flowerContainer.appendChild(flower);
-            flowerContainer.appendChild(grass);
             garden.appendChild(flowerContainer);
+            garden.appendChild(grass);
             flowers.push(flower);
         }
 
