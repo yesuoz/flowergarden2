@@ -27,23 +27,18 @@
             width: 100%;
             height: calc(100% - 60px);
         }
-        .flower-container {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
         .flower {
-            width: 50px;
-            height: 100px;
+            position: absolute;
+            transition: transform 0.5s ease-in-out;
         }
         .grass {
-            width: 30px;
+            position: absolute;
+            width: 20px;
             height: 10px;
             background: green;
             border-radius: 50%;
-            position: absolute;
             bottom: 0;
+            left: calc(50% - 10px);
         }
         #waterButton {
             padding: 10px 20px;
@@ -65,11 +60,27 @@
             height: 50px;
             border-radius: 50%;
             background: rgba(173, 216, 230, 0.7);
-            animation: ripple 1s ease-out forwards;
+            animation: waterEffectAnim 1s ease-out forwards;
         }
         @keyframes ripple {
             from { transform: scale(1); opacity: 1; }
             to { transform: scale(5); opacity: 0; }
+        }
+        @keyframes growStem {
+            from { y2: 200; }
+            to { y2: 150; }
+        }
+        @keyframes growLeaves {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes growCenter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes growPetals {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .flower {
             transition: transform 0.5s ease-in-out;
@@ -88,40 +99,33 @@
     <h1>Çiçek Sulama Uygulaması</h1>
     <div id="garden"></div>
     <button id="waterButton">Sulayıcı!</button>
-
     <script>
         let growthStage = 0;
         let flowers = [];
         const garden = document.getElementById('garden');
 
-        function getRandomColor() {
-            const colors = ['#FF69B4', '#FF4500', '#FFD700', '#ADFF2F', '#00CED1', '#1E90FF', '#9370DB'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
         function createFlower(x, y) {
             const flowerContainer = document.createElement('div');
-            flowerContainer.classList.add('flower-container');
+            flowerContainer.style.position = 'absolute';
             flowerContainer.style.left = `${x}px`;
             flowerContainer.style.top = `${y}px`;
 
             const flower = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             flower.setAttribute('class', 'flower');
             flower.setAttribute('viewBox', '0 0 200 200');
-            flower.setAttribute('width', '50');
+            flower.setAttribute('width', '100');
             flower.setAttribute('height', '100');
             
-            const petalColor = getRandomColor();
-
             flower.innerHTML = `
-                <line class="stem" x1="100" y1="200" x2="100" y2="50" stroke="green" stroke-width="4"/>
-                <circle class="center" cx="100" cy="50" r="10" fill="yellow"/>
-                ${Array.from({ length: 12 }, (_, i) => {
-                    const angle = (i / 12) * Math.PI * 2;
-                    const cx = 100 + Math.cos(angle) * 20;
-                    const cy = 50 + Math.sin(angle) * 20;
-                    return `<circle class="petal" cx="${cx}" cy="${cy}" r="10" fill="${petalColor}" />`;
-                }).join('')}
+                <line class="stem" x1="100" y1="200" x2="100" y2="150" stroke="green" stroke-width="2"/>
+                <ellipse class="leaf" cx="95" cy="170" rx="10" ry="4" fill="green" transform="rotate(-30 95 170)" style="opacity: 0;"/>
+                <ellipse class="leaf" cx="105" cy="170" rx="10" ry="4" fill="green" transform="rotate(30 105 170)" style="opacity: 0;"/>
+                <circle class="center" cx="100" cy="140" r="5" fill="yellow" style="opacity: 0;"/>
+                <circle class="petal" cx="100" cy="130" r="5" fill="white" style="opacity: 0;"/>
+                <circle class="petal" cx="90" cy="135" r="5" fill="white" style="opacity: 0;"/>
+                <circle class="petal" cx="110" cy="135" r="5" fill="white" style="opacity: 0;"/>
+                <circle class="petal" cx="95" cy="145" r="5" fill="white" style="opacity: 0;"/>
+                <circle class="petal" cx="105" cy="145" r="5" fill="white" style="opacity: 0;"/>
             `;
 
             const grass = document.createElement('div');
@@ -135,20 +139,35 @@
 
         function growFlower(flower, stage) {
             const stem = flower.querySelector('.stem');
+            const leaves = flower.querySelectorAll('.leaf');
             const center = flower.querySelector('.center');
             const petals = flower.querySelectorAll('.petal');
 
             if (stage <= 4) {
-                stem.setAttribute('y2', 200 - stage * 30);
-                if (stage >= 1) {
+                stem.setAttribute('y2', 150 - stage * 5);
+                stem.style.animation = `growStem 0.5s forwards`;
+
+                if (stage == 1) {
+                    leaves.forEach(leaf => {
+                        leaf.style.animation = `growLeaves 0.5s forwards`;
+                        leaf.style.opacity = 1;
+                    });
+                }
+
+                if (stage == 2) {
+                    center.style.animation = `growCenter 0.5s forwards`;
                     center.style.opacity = 1;
-                    petals.forEach(petal => petal.style.opacity = 1);
+
+                    petals.forEach(petal => {
+                        petal.style.animation = `growPetals 0.5s forwards`;
+                        petal.style.opacity = 1;
+                    });
                 }
             }
         }
 
         document.getElementById('waterButton').addEventListener('click', function() {
-            const x = Math.random() * (window.innerWidth - 50);
+            const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 100);
             createFlower(x, y);
 
@@ -162,7 +181,7 @@
 
             const waterEffect = document.createElement('div');
             waterEffect.classList.add('waterEffect');
-            waterEffect.style.left = `${x + 25}px`;
+            waterEffect.style.left = `${x + 50}px`;
             waterEffect.style.top = `${y + 50}px`;
             garden.appendChild(waterEffect);
 
