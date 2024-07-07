@@ -62,7 +62,7 @@
             background: rgba(173, 216, 230, 0.7);
             animation: waterEffectAnim 1s ease-out forwards;
         }
-        @keyframes ripple {
+        @keyframes waterEffectAnim {
             from { transform: scale(1); opacity: 1; }
             to { transform: scale(5); opacity: 0; }
         }
@@ -96,13 +96,18 @@
     </style>
 </head>
 <body>
-    <h1>Çiçek Sulama Uygulaması</h1>
+    <h1>Hatunumun Bahçesi</h1>
     <div id="garden"></div>
     <button id="waterButton">Sulayıcı!</button>
     <script>
         let growthStage = 0;
         let flowers = [];
         const garden = document.getElementById('garden');
+        const flowerColors = ['red', 'blue', 'purple', 'orange', 'pink'];
+
+        function getRandomColor() {
+            return flowerColors[Math.floor(Math.random() * flowerColors.length)];
+        }
 
         function createFlower(x, y) {
             const flowerContainer = document.createElement('div');
@@ -115,22 +120,23 @@
             flower.setAttribute('viewBox', '0 0 200 200');
             flower.setAttribute('width', '100');
             flower.setAttribute('height', '100');
+
+            const petalColor = getRandomColor();
             
             flower.innerHTML = `
                 <line class="stem" x1="100" y1="200" x2="100" y2="150" stroke="green" stroke-width="2"/>
                 <ellipse class="leaf" cx="95" cy="170" rx="10" ry="4" fill="green" transform="rotate(-30 95 170)" style="opacity: 0;"/>
                 <ellipse class="leaf" cx="105" cy="170" rx="10" ry="4" fill="green" transform="rotate(30 105 170)" style="opacity: 0;"/>
                 <circle class="center" cx="100" cy="140" r="5" fill="yellow" style="opacity: 0;"/>
-                <circle class="petal" cx="100" cy="130" r="5" fill="white" style="opacity: 0;"/>
-                <circle class="petal" cx="90" cy="135" r="5" fill="white" style="opacity: 0;"/>
-                <circle class="petal" cx="110" cy="135" r="5" fill="white" style="opacity: 0;"/>
-                <circle class="petal" cx="95" cy="145" r="5" fill="white" style="opacity: 0;"/>
-                <circle class="petal" cx="105" cy="145" r="5" fill="white" style="opacity: 0;"/>
+                <circle class="petal" cx="100" cy="130" r="5" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="90" cy="135" r="5" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="110" cy="135" r="5" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="95" cy="145" r="5" fill="${petalColor}" style="opacity: 0;"/>
+                <circle class="petal" cx="105" cy="145" r="5" fill="${petalColor}" style="opacity: 0;"/>
             `;
 
             const grass = document.createElement('div');
             grass.setAttribute('class', 'grass');
-
             flowerContainer.appendChild(flower);
             flowerContainer.appendChild(grass);
             garden.appendChild(flowerContainer);
@@ -167,8 +173,25 @@
         }
 
         document.getElementById('waterButton').addEventListener('click', function() {
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
+            const gardenWidth = garden.clientWidth;
+            const gardenHeight = garden.clientHeight;
+            const flowerSize = 100;
+            let x, y, collision;
+
+            do {
+                collision = false;
+                x = Math.random() * (gardenWidth - flowerSize);
+                y = Math.random() * (gardenHeight - flowerSize);
+                for (const flower of flowers) {
+                    const flowerX = parseFloat(flower.parentElement.style.left);
+                    const flowerY = parseFloat(flower.parentElement.style.top);
+                    if (Math.abs(flowerX - x) < flowerSize && Math.abs(flowerY - y) < flowerSize) {
+                        collision = true;
+                        break;
+                    }
+                }
+            } while (collision);
+
             createFlower(x, y);
 
             flowers.forEach((flower, index) => {
